@@ -1,0 +1,657 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sensor Dashboard</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns"></script>
+    <style>
+        
+ table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    font-size: 14px;
+    color: #333;
+    table-layout: fixed;  
+}
+
+th, td {
+    padding: 12px;
+    text-align: center;
+    border: 1px solid #ddd;
+}
+
+th {
+    background-color: #4A90E2;
+    color: white;
+}
+
+ th:nth-child(1), td:nth-child(1) {
+    width: 250px;  
+    white-space: normal;  
+    word-wrap: break-word;  
+    overflow-wrap: break-word;  
+    word-break: break-word;  
+}
+
+ 
+.line5-table th:nth-child(1), .line5-table td:nth-child(1) {
+    width: 250px;  
+    white-space: normal;  
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    word-break: break-word;
+}
+
+.table-container {
+    max-height: 450px;
+    overflow-y: auto;
+    border-radius: 8px;
+    margin-bottom: 30px;
+}
+
+ tbody {
+    display: block;
+    max-height: 400px;   
+    overflow-y: auto;
+    width: 100%;
+}
+
+thead, tbody tr {
+    display: table;
+    width: 100%;
+    table-layout: fixed;
+}
+
+ 
+.pagination {
+    text-align: center;
+    margin-top: 20px;
+}
+
+.pagination a {
+    padding: 8px 16px;
+    margin: 0 5px;
+    text-decoration: none;
+    background-color: #4A90E2;
+    color: white;
+    border-radius: 5px;
+}
+
+.pagination a.active {
+    background-color: #357ABD;
+}
+
+.pagination a.disabled {
+    background-color: #ccc;
+    pointer-events: none;
+}
+
+ 
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: #f4f7fa;
+    margin: 0;
+    padding: 20px;
+    color: #333;
+}
+
+h1 {
+    text-align: center;
+    color: #4A90E2;
+}
+
+.container {
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+form {
+    display: flex;
+    justify-content: flex-start;
+    margin-bottom: 20px;
+}
+
+label {
+    margin-right: 10px;
+    font-weight: bold;
+}
+
+select, input, button {
+    padding: 8px;
+    margin-right: 10px;
+    font-size: 14px;
+    border-radius: 5px;
+    border: 1px solid #ddd;
+}
+
+button {
+    background-color: #4A90E2;
+    color: white;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #357ABD;
+}
+
+td {
+    font-size: 12px;
+}
+
+ 
+@media screen and (max-width: 768px) {
+    table, th, td {
+        font-size: 10px;  
+    }
+
+    td {
+        padding: 8px;  
+    }
+
+    th, td {
+        word-wrap: break-word;  
+    }
+
+    .table-container {
+        max-height: 350px;  
+    }
+
+    form {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    label, select, input, button {
+        margin-bottom: 10px;
+    }
+
+    .container {
+        padding: 15px;
+    }
+
+     .line5-table th:nth-child(1), .line5-table td:nth-child(1) {
+        width: auto;  
+        font-size: 9px;  
+        padding: 6px;  
+    }
+
+     th:nth-child(1), td:nth-child(1) {
+        width: 150px;  
+    }
+
+     table {
+        width: 100%;  
+    }
+}
+
+        .green {
+            background-color: #4CAF50;
+            color: white;
+        }
+
+        .amber {
+            background-color: #FF9800;
+            color: white;
+        }
+
+        .red {
+            background-color: #F44336;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <h1>Sensor Dashboard</h1>
+
+    <div id="filter-container">
+        <label for="dateFilter">Select Date:</label>
+        <input type="date" id="dateFilter">
+        <button id="applyFilter">Apply</button>
+        <button id="clearFilter">Clear Filter</button>
+
+    </div>
+    <!-- Toggle Button for Chart View -->
+<div style="margin-top: 10px;">
+    <button id="toggleChartBtn">Toggle Chart View</button>
+</div>
+
+ <div id="chartView" style="display: none; margin-top: 20px;">
+    <h2>Line 4 Sensor Trends</h2>
+    <canvas id="lineChart4" height="200"></canvas>
+
+    <h2>Line 5 Sensor Trends</h2>
+    <canvas id="lineChart5" height="200"></canvas>
+
+    <h2>Anomaly Count per Sensor (Last 3 Hours)</h2>
+    <canvas id="barChart" height="200"></canvas>
+</div>
+
+
+    <h2>Line 4 Sensor Data</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Timestamp</th>
+                <th>r1</th>
+                <th>r2</th>
+                <th>r3</th>
+                <th>r4</th>
+                <th>r5</th>
+                <th>r6</th>
+                <th>r7</th>
+                <th>r8</th>
+            </tr>
+        </thead>
+        <tbody id="line4Table"></tbody>
+    </table>
+
+    <div>
+        <button id="prevPageLine4">Previous</button>
+        <button id="nextPageLine4">Next</button>
+    </div>
+
+    <h2>Line 5 Sensor Data</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Timestamp</th>
+                <th>r1</th>
+                <th>r2</th>
+                <th>r3</th>
+                <th>r4</th>
+                <th>r5</th>
+                <th>r6</th>
+                <th>r7</th>
+                <th>r8</th>
+                <th>r9</th>
+                <th>r10</th>
+                <th>r11</th>
+                <th>r12</th>
+                <th>r13</th>
+                <th>r14</th>
+                <th>r15</th>
+                <th>r16</th>
+                <th>r17</th>
+            </tr>
+        </thead>
+        <tbody id="line5Table"></tbody>
+    </table>
+
+    <div>
+        <button id="prevPageLine5">Previous</button>
+        <button id="nextPageLine5">Next</button>
+    </div>
+    
+
+    <script>
+    let currentPageLine4 = 1;
+    let currentPageLine5 = 1;
+    let selectedDate = "";
+    let line4DataRecent = [], line5DataRecent = [];
+
+    function fetchData(page, line) {
+        let url = `http://localhost:5000/api/data?page=${page}&limit=500`;
+
+        if (selectedDate) {
+            console.log("Fetching data with date filter:", selectedDate);
+            url += `&date=${encodeURIComponent(selectedDate)}`;
+        }
+
+        fetch(url)
+            .then(response => {
+                if (!response.ok) throw new Error(`Server error: ${response.status}`);
+                return response.json();
+            })
+            .then(data => {
+                if (line === "line4") {
+                    populateTable("line4Table", data.line4, data.predictionsLine4);
+                    updatePagination(data.pagination, "line4");
+                } else {
+                    populateTable("line5Table", data.line5, data.predictionsLine5);
+                    updatePagination(data.pagination, "line5");
+                }
+            })
+            .catch(error => console.error("Error fetching data:", error));
+    }
+
+    function populateTable(tableId, data, predictions) {
+        const tableBody = document.getElementById(tableId);
+        tableBody.innerHTML = '';
+
+        data.forEach((row) => {
+            const tr = document.createElement("tr");
+            tr.appendChild(createCell(row['timestamp']));
+
+            const sensors = getSensorsForTable(tableId);
+
+            sensors.forEach((sensorKey, colIndex) => {
+                const td = createCell(row[sensorKey]);
+
+                if (predictions && predictions[colIndex] && predictions[colIndex].status) {
+                    applyPredictionStyle(td, predictions[colIndex].status);
+                }
+
+                tr.appendChild(td);
+            });
+
+            tableBody.appendChild(tr);
+        });
+    }
+
+    function getSensorsForTable(tableId) {
+        return tableId === 'line5Table'
+            ? ['r01', 'r02', 'r03', 'r04', 'r05', 'r06', 'r07', 'r08', 'r09', 'r10', 'r11', 'r12', 'r13', 'r14', 'r15', 'r16', 'r17']
+            : ['r01', 'r02', 'r03', 'r04', 'r05', 'r06', 'r07', 'r08'];
+    }
+
+    function createCell(value) {
+        const td = document.createElement("td");
+        td.textContent = value;
+        return td;
+    }
+
+    function applyPredictionStyle(cell, predictionStatus) {
+        cell.classList.remove("red", "amber", "green");
+
+        if (predictionStatus === "green") cell.classList.add("green");
+        else if (predictionStatus === "amber") cell.classList.add("amber");
+        else if (predictionStatus === "red") cell.classList.add("red");
+    }
+
+    function updatePagination(pagination, line) {
+    const capitalizedLine = line.charAt(0).toUpperCase() + line.slice(1);
+    const prevButton = document.getElementById(`prevPage${capitalizedLine}`);
+    const nextButton = document.getElementById(`nextPage${capitalizedLine}`);
+
+    prevButton.disabled = !pagination.prev_page;
+    nextButton.disabled = !pagination.next_page;
+
+    prevButton.onclick = () => {
+        if (pagination.prev_page) {
+            if (line === "line4") currentPageLine4 = pagination.prev_page;
+            else currentPageLine5 = pagination.prev_page;
+
+            fetchData(pagination.prev_page, line);
+        }
+    };
+
+    nextButton.onclick = () => {
+        if (pagination.next_page) {
+            if (line === "line4") currentPageLine4 = pagination.next_page;
+            else currentPageLine5 = pagination.next_page;
+
+            fetchData(pagination.next_page, line);
+        }
+    };
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+    document.getElementById("applyFilter").addEventListener("click", () => {
+        selectedDate = document.getElementById("dateFilter").value;
+        console.log("Filter applied with date:", selectedDate);
+
+        // Reset to page 1 when filter is applied
+        currentPageLine4 = 1;
+        currentPageLine5 = 1;
+
+        fetchData(currentPageLine4, "line4");
+        fetchData(currentPageLine5, "line5");
+    });
+
+    document.getElementById("clearFilter").addEventListener("click", () => {
+        selectedDate = "";
+        document.getElementById("dateFilter").value = "";
+        console.log("Filter cleared.");
+
+        // Reset to page 1 when filter is cleared
+        currentPageLine4 = 1;
+        currentPageLine5 = 1;
+
+        fetchData(currentPageLine4, "line4");
+        fetchData(currentPageLine5, "line5");
+    });
+
+    fetchData(currentPageLine4, "line4");
+    fetchData(currentPageLine5, "line5");
+});
+
+    function fetchRandomData() {
+        console.log("Fetching random data...");
+        fetch("http://localhost:5000/api/random_data")
+            .then(response => response.json())
+            .then(data => {
+                console.log("Random Data Received:", data);
+                if (!selectedDate) {
+                    appendToTable("line4Table", [data.line4], data.predictionsLine4);
+                    appendToTable("line5Table", [data.line5], data.predictionsLine5);
+
+                    const now = new Date().toISOString();
+                    data.line4.timestamp = now;
+                    data.line5.timestamp = now;
+                    data.line4._predictions = data.predictionsLine4;
+                    data.line5._predictions = data.predictionsLine5;
+
+                    line4DataRecent.push(data.line4);
+                    line5DataRecent.push(data.line5);
+
+                    const cutoff = Date.now() - 3 * 60 * 60 * 1000;
+                    line4DataRecent = line4DataRecent.filter(d => new Date(d.timestamp).getTime() >= cutoff);
+                    line5DataRecent = line5DataRecent.filter(d => new Date(d.timestamp).getTime() >= cutoff);
+
+                    updateCharts();
+                }
+            })
+            .catch(error => console.error("Error fetching random data:", error));
+    }
+
+    function appendToTable(tableId, data, predictions) {
+        const tableBody = document.getElementById(tableId);
+        data.forEach((row) => {
+            const tr = document.createElement("tr");
+            tr.appendChild(createCell(row['timestamp']));
+
+            const sensors = getSensorsForTable(tableId);
+            sensors.forEach((sensorKey, colIndex) => {
+                const td = createCell(row[sensorKey]);
+                if (predictions && predictions[colIndex] && predictions[colIndex].status) {
+                    applyPredictionStyle(td, predictions[colIndex].status);
+                }
+                tr.appendChild(td);
+            });
+
+            tableBody.prepend(tr);
+        });
+    }
+
+    setInterval(fetchRandomData, 30000);
+</script>
+<script>
+    const chartToggleBtn = document.getElementById("toggleChartBtn");
+    let isChartVisible = false;
+    
+    chartToggleBtn.addEventListener("click", () => {
+        isChartVisible = !isChartVisible;
+        document.getElementById("chartView").style.display = isChartVisible ? "block" : "none";
+    });
+    
+    const sensorLabels = Array.from({ length: 17 }, (_, i) => `r${(i + 1).toString().padStart(2, '0')}`);
+    const ctxLine4 = document.getElementById('lineChart4').getContext('2d');
+    const ctxLine5 = document.getElementById('lineChart5').getContext('2d');
+    const ctxBar = document.getElementById('barChart').getContext('2d');
+    
+    function calculateMedian(values) {
+        const sorted = values.slice().sort((a, b) => a - b);
+        const mid = Math.floor(sorted.length / 2);
+        return sorted.length % 2 === 0
+            ? ((sorted[mid - 1] + sorted[mid]) / 2).toFixed(2)
+            : sorted[mid].toFixed(2);
+    }
+    
+    const tooltipPlugin = {
+        callbacks: {
+            label: function (context) {
+                const dataset = context.chart.data.datasets[context.datasetIndex];
+                const label = dataset.label || '';
+                const value = context.raw;
+    
+                const validValues = dataset.data.filter(v => v !== null && !isNaN(v));
+                const min = Math.min(...validValues).toFixed(2);
+                const max = Math.max(...validValues).toFixed(2);
+                const avg = (validValues.reduce((a, b) => a + parseFloat(b), 0) / validValues.length).toFixed(2);
+                const median = calculateMedian(validValues);
+    
+                return [
+                `${label}: ${value}`,
+                `Min: ${min}`,
+                `Max: ${max}`,
+                `Avg: ${avg}`,
+                `Median: ${median}`
+            ];            }
+        }
+    };
+    
+    const lineChart4 = new Chart(ctxLine4, {
+    type: 'line',
+    data: {
+        labels: [],
+        datasets: Array.from({ length: 8 }, (_, i) => {
+            const sensor = `r${(i + 1).toString().padStart(2, '0')}`;
+            return {
+                label: sensor,
+                data: [],
+                borderColor: `hsl(${i * 45}, 70%, 50%)`,
+                fill: false,
+                tension: 0.4,
+                borderWidth: 2
+            };
+        })
+    },
+    options: {
+        animation: false,
+        responsive: true,
+        plugins: {
+            legend: { position: 'bottom' },
+            tooltip: tooltipPlugin
+        },
+        scales: {
+            x: { type: 'time', time: { unit: 'minute' } },
+            y: {
+                title: { display: true, text: 'Sensor Value' },
+                suggestedMin: 0,
+                suggestedMax: 100
+            }
+        }
+    }
+});
+    const lineChart5 = new Chart(ctxLine5, {
+    type: 'line',
+    data: {
+        labels: [],
+        datasets: Array.from({ length: 17 }, (_, i) => {
+            const sensor = `r${(i + 1).toString().padStart(2, '0')}`;
+            return {
+                label: sensor,
+                data: [],
+                borderColor: `hsl(${(i + 1) * 20}, 70%, 50%)`,
+                fill: false,
+                tension: 0.4,
+                borderWidth: 2
+            };
+        })
+    },
+    options: {
+        animation: false,
+        responsive: true,
+        plugins: {
+            legend: { position: 'bottom' },
+            tooltip: tooltipPlugin
+        },
+        scales: {
+            x: { type: 'time', time: { unit: 'minute' } },
+            y: {
+                title: { display: true, text: 'Sensor Value' },
+                suggestedMin: 0,
+                suggestedMax: 100
+            }
+        }
+    }
+});
+
+    const barChart = new Chart(ctxBar, {
+        type: 'bar',
+        data: {
+            labels: sensorLabels,
+            datasets: [
+                { label: 'Green', backgroundColor: 'green', data: [] },
+                { label: 'Amber', backgroundColor: 'orange', data: [] },
+                { label: 'Red', backgroundColor: 'red', data: [] }
+            ]
+        },
+        options: {
+            responsive: true,
+            plugins: { legend: { position: 'bottom' } },
+            scales: {
+                x: { stacked: true },
+                y: { stacked: true }
+            }
+        }
+    });
+    
+    function updateCharts() {
+        const now = new Date();
+    
+        const recent4 = line4DataRecent.filter(d => now - new Date(d.timestamp) <= 3 * 60 * 60 * 1000);
+        const recent5 = line5DataRecent.filter(d => now - new Date(d.timestamp) <= 3 * 60 * 60 * 1000);
+    
+        lineChart4.data.labels = recent4.map(d => d.timestamp);
+        lineChart4.data.datasets.forEach((ds, i) => {
+            const key = `r${(i + 1).toString().padStart(2, '0')}`;
+            ds.data = recent4.map(d => d[key] ?? null);
+        });
+        lineChart4.update();
+    
+        lineChart5.data.labels = recent5.map(d => d.timestamp);
+        lineChart5.data.datasets.forEach((ds, i) => {
+            const key = `r${(i + 1).toString().padStart(2, '0')}`;
+            ds.data = recent5.map(d => d[key] ?? null);
+        });
+        lineChart5.update();
+    
+        const all = [...recent4, ...recent5];
+        const counts = Array.from({ length: 17 }, () => ({ green: 0, amber: 0, red: 0 }));
+    
+        all.forEach(d => {
+            (d._predictions || []).forEach((p, i) => {
+                if (p?.status && counts[i]) {
+                    counts[i][p.status]++;
+                }
+            });
+        });
+    
+        ['green', 'amber', 'red'].forEach((status, i) => {
+            barChart.data.datasets[i].data = counts.map(c => c[status]);
+        });
+    
+        barChart.update();
+    }
+    
+    const originalFetch = fetchRandomData;
+    fetchRandomData = function () {
+        originalFetch();
+        updateCharts();
+    };
+    </script>
+    
+        
+        
+        
+</body>
+</html>

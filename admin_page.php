@@ -26,7 +26,7 @@ if(!isset($_SESSION['admin_name'])){
             <h1>Welcome <span><?php echo $_SESSION['admin_name'] ?></span></h1>
     
             <a href="admin_users.php" class="btn">Users Panel</a>
-            <a href="dashB.php" class="btn">Dashboard Panel</a>
+            <a href="dashB.html" class="btn">Dashboard Panel</a>
             <a href="login_form.php" class="btn">Logout</a>
 
         </div>

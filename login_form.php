@@ -39,7 +39,7 @@ if(isset($_POST['submit'])){
                 // Checking if the user is a normal user
                 elseif($row['user_type'] == 'user'){
                     $_SESSION['user_name'] = $row['name'];
-                    header('location:dashB.php');
+                    header('location:dashB.html');
                     exit();
                 }
             } else {
