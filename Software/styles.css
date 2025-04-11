@@ -1,0 +1,306 @@
+/* Global Reset */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+}
+
+/* Body Styling */
+body {
+    background: #F5F5F5;
+}
+
+/* Navbar Styling */
+.navbar {
+    background: #131313;
+    height: 80px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.2rem;
+    position: sticky;
+    top: 0;
+    z-index: 999;
+    width: 100%;
+}
+
+/* Navbar Container */
+.navbar_container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    max-width: 1300px;
+    padding: 0 50px;
+}
+
+/* Navbar Logo */
+#navbar_logo {
+    color: white;
+    font-size: 1.5rem;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+/* Welcome Message */
+.navbar_welcome {
+    color: white;
+    font-size: 1.5rem;   
+    text-decoration: none;
+    font-weight: bold; 
+    text-align: center;
+    flex-grow: 1;   
+}
+
+/* Regular Navbar Menu (shown on large screens) */
+.navbar_menu {
+    display: flex;
+    align-items: center;
+    list-style: none;
+}
+
+/* Navbar Items */
+.navbar_item {
+    padding: 0 15px;
+}
+
+/* Navbar Links */
+.navbar_links {
+    color: #fff;
+    text-decoration: none;
+    padding: 10px 15px;
+    transition: color 0.3s ease;
+}
+
+.navbar_links:hover {
+    color: #0f95ca;
+}
+
+/* Navbar Button */
+.navbar_btn {
+    padding: 0 15px;
+}
+
+.button {
+    padding: 10px 20px;
+    border-radius: 4px;
+    background: #f77062;
+    color: #fff;
+    text-decoration: none;
+    transition: background 0.3s ease;
+}
+
+.button:hover {
+    background: #4837ff;
+}
+
+/* Navbar Toggle Button (☰) */
+.navbar_toggle {
+    display: none; /* Hide by default */
+    cursor: pointer;
+    position: absolute;
+    right: 20px;
+    top: 20px;
+    z-index: 1000; /* Ensures it's above other elements */
+}
+
+.navbar_toggle .bar {
+    display: block;
+    width: 30px;
+    height: 4px;
+    margin: 6px auto;
+    background: white;
+    transition: all 0.3s ease-in-out;
+}
+
+/* Tablet & Mobile Dropdown Menu (Hidden by Default) */
+.navbar_dropdown {
+    display: none;
+    position: absolute;
+    top: 80px;
+    left: 0;
+    width: 100%;
+    background: #131313;
+    flex-direction: column;
+    text-align: center;
+    padding: 10px 0;
+}
+
+/* When active, dropdown menu appears */
+.navbar_dropdown.active {
+    display: flex;
+}
+
+/* Dropdown Menu Items */
+.navbar_dropdown li {
+    list-style: none;
+    padding: 10px 0;
+}
+
+.navbar_dropdown a {
+    color: white;
+    text-decoration: none;
+    font-size: 18px;
+    display: block;
+}
+
+.navbar_dropdown a:hover {
+    background-color: #444;
+}
+
+/* Form Styling */
+.form_container {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    background: #eee;
+}
+
+.form_container form {
+    padding: 25px;
+    border-radius: 8px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
+    background: #ffffff;
+    text-align: center;
+    border: 2px solid #2196F3;
+}
+
+.form_container form h3 {
+    font-size: 28px;
+    text-transform: uppercase;
+    margin-bottom: 15px;
+    color: #2196F3;
+}
+
+.form_container form input,
+.form_container form select {
+    width: 100%;
+    padding: 12px 15px;
+    font-size: 18px;
+    margin: 10px 0;
+    background: #EFEFEF;
+    border: 1px solid #1565C0;
+    border-radius: 5px;
+    color: #333;
+}
+
+.form_container form .form-btn {
+    background: #4CAF50;
+    color: #ffffff;
+    text-transform: capitalize;
+    font-size: 20px;
+    cursor: pointer;
+    border-radius: 5px;
+    padding: 12px;
+    transition: all 0.3s ease;
+    border: none;
+}
+
+.form_container form .form-btn:hover {
+    background: #388E3C;
+    color: #ffffff;
+}
+
+.form_container form p {
+    margin-top: 12px;
+    font-size: 18px;
+    color: #333;
+}
+
+.form_container form p a {
+    color: #1565C0;
+    font-weight: bold;
+    text-decoration: none;
+}
+
+.form_container form p a:hover {
+    color: #0D47A1;
+}
+
+/* Media Queries */
+
+/* Show the navbar toggle button for tablet and mobile screens (below 1000px) */
+@media (max-width: 1000px) {
+    .navbar_toggle {
+        display: block; /* Show the hamburger menu on smaller screens */
+    }
+
+    .navbar_menu {
+        display: none; /* Hide the menu items */
+    }
+
+    /* Show the dropdown menu when it's active */
+    .navbar_dropdown.active {
+        display: flex; /* Show the dropdown when active */
+    }
+}
+
+/* Admin Page Styling */
+.container {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    background: #F5F5F5; /* Soft gray background for contrast */
+}
+
+.content {
+    padding: 40px; /* Increased padding for a larger box */
+    border-radius: 10px; /* Slightly more rounded corners */
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2); /* Larger shadow for emphasis */
+    background: #ffffff; /* White background for the content area */
+    text-align: center;
+    border: 2px solid #2196F3; /* Light blue border */
+    width: 80%; /* Makes the content box take up more space */
+    max-width: 900px; /* Limits the max width to prevent it from getting too large */
+}
+
+.content h3 {
+    font-size: 32px; /* Increased font size */
+    text-transform: uppercase;
+    margin-bottom: 20px;
+    color: #2196F3; /* Light blue for the heading */
+}
+
+.content h1 {
+    font-size: 36px; /* Increased font size for better visibility */
+    color: #333; /* Dark gray text for the name */
+    margin: 30px 0;
+}
+
+.content span {
+    color: #2196F3; /* Light blue color for the span text */
+}
+
+.content p {
+    font-size: 20px; /* Increased font size */
+    color: #333;
+}
+
+.content .btn {
+    background: #4CAF50; /* Green button for a fresh look */
+    color: #fff;
+    text-transform: capitalize;
+    font-size: 22px; /* Increased button font size */
+    cursor: pointer;
+    border-radius: 5px;
+    padding: 20px 40px; /* Larger button padding for more prominence */
+    text-decoration: none;
+    transition: all 0.3s ease;
+    margin: 30px 0; /* Increased margin to move buttons down */
+    display: inline-block;
+    width: auto;
+}
+
+.content .btn:hover {
+    background: #388E3C; /* Darker green on hover */
+}
+
+.content .btn:active {
+    background: #2C6B2F; /* Darker green on active state */
+}
+
