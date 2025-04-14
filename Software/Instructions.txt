@@ -1,0 +1,1 @@
+Instructions to open Download codeStore code files within htdocs in xaamp Open Myphpadmin Create Database called User_db Import the sql file into the new database Open code from file from htdocsRun python app.pyDownload pacets if required Then go to localhost/login_form.phpLogin to Dashboard using Admin@example.com and password which is password
